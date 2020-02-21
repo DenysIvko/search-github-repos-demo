@@ -1,0 +1,28 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import styles from './{{name}}.mscss';
+
+class {{name}} extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  render() {
+    return (
+      <div className={styles.container}>
+        {this.props.componentName}
+      </div>
+    );
+  }
+}
+
+{{name}}.propTypes = {
+  componentName: PropTypes.string
+};
+
+{{name}}.defaultProps = {
+  componentName: '{{name}}'
+};
+
+export default {{name}};

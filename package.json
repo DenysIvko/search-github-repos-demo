@@ -20,6 +20,7 @@
     "enzyme-adapter-react-16": "^1.15.2",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.7",
+    "plop": "^2.5.4",
     "prettier": "^1.19.1",
     "react-json-view": "^1.19.1",
     "react-test-renderer": "^16.12.0",
@@ -30,7 +31,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "coverage": "npm test -- --coverage",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "plop": "plop"
   },
   "husky": {
     "hooks": {

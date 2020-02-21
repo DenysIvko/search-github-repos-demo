@@ -1,0 +1,22 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+import styles from './{{name}}.mscss';
+
+const {{name}} = (props) => {
+  return (
+    <div className={styles.container}>
+      {props.componentName}
+    </div>
+  );
+};
+
+{{name}}.propTypes = {
+  componentName: PropTypes.string
+};
+
+{{name}}.defaultProps = {
+  componentName: '{{name}}'
+};
+
+export default {{name}};

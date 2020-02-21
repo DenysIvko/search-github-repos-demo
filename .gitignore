@@ -4,5 +4,8 @@ node_modules
 # build folder
 build
 
+# coverage
+coverage
+
 # IDE files
 .idea

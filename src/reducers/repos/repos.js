@@ -1,17 +1,41 @@
+import { fetchRepos as fetchReposApi } from 'api/repos/repos';
+
 /* ACTION CONSTANTS */
 
 export const SET_REPOS = 'SET_REPOS';
+export const SET_REPOS_LOADING = 'SET_REPOS_LOADING';
+export const SET_QUERY = 'SET_QUERY';
 
 /* REDUCER */
 
-const initialState = {};
+const initialState = {
+  last: '',
+  byQuery: {}
+};
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case SET_REPOS: {
       return {
         ...state,
-        ...action.payload
+        last: action.payload.key,
+        byQuery: {
+          ...state.byQuery,
+          [action.payload.key]: action.payload.data
+        },
+        loading: false
+      };
+    }
+    case SET_REPOS_LOADING: {
+      return {
+        ...state,
+        loading: action.payload
+      };
+    }
+    case SET_QUERY: {
+      return {
+        ...state,
+        last: action.payload
       };
     }
     default: {
@@ -22,16 +46,53 @@ export default (state = initialState, action) => {
 
 /* SELECTORS */
 
-export const getState = (state) => {
-  return state;
+export const getCurrentState = (state) => {
+  return state.repos;
+};
+
+export const getLastResults = (state) => {
+  const { last } = getCurrentState(state);
+  return getByQuery(state, last);
+};
+
+export const getQuery = (state) => {
+  const { last } = getCurrentState(state);
+  return last;
+};
+
+export const getCachedQueries = (state) => {
+  const { byQuery } = getCurrentState(state);
+  return Object.keys(byQuery);
+};
+
+export const getByQuery = (state, query) => {
+  const { byQuery } = getCurrentState(state);
+  return byQuery[query];
 };
 
 /* ACTION CREATORS */
 
-export const setRepos = (repos) => {
+export const setRepos = (key, data) => {
   return {
     type: SET_REPOS,
-    payload: repos
+    payload: {
+      key,
+      data
+    }
+  };
+};
+
+export const setReposLoading = (loading) => {
+  return {
+    type: SET_REPOS_LOADING,
+    payload: loading
+  };
+};
+
+export const setQuery = (query) => {
+  return {
+    type: SET_QUERY,
+    payload: query
   };
 };
 
@@ -39,6 +100,19 @@ export const setRepos = (repos) => {
 
 export const fetchRepos = (params) => {
   return async (dispatch, getState) => {
-    await fetchRepos(params);
+    const state = getState();
+    const cachedResults = getByQuery(state, params.query);
+
+    dispatch(setReposLoading(true));
+
+    if (cachedResults) {
+      dispatch(setReposLoading(false));
+      return Promise.resolve(cachedResults);
+    }
+
+    const reposData = await fetchReposApi(params);
+    dispatch(setRepos(params.query, reposData));
+    dispatch(setReposLoading(false));
+    return reposData;
   };
 };

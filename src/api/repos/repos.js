@@ -1,5 +1,4 @@
 import axios from 'axios';
-import parseLinkHeader from 'parse-link-header';
 
 const GITHUB_HOST = 'https://api.github.com';
 const REPOSITORIES_ENDPOINT = `${GITHUB_HOST}/search/repositories`;
@@ -18,11 +17,10 @@ const serializeParams = (params) => {
   };
 };
 
-const parse = ({ data, headers }) => {
+const parse = (data, params) => {
   return {
     total: data.total_count,
-    // Github insists on using Link Header for pagination instead of constructing own URLs
-    paginate: parseLinkHeader(headers.link),
+    params,
     items: data.items.map((item) => {
       return {
         id: item.id,
@@ -35,16 +33,18 @@ const parse = ({ data, headers }) => {
 };
 
 export const fetchRepos = (params) => {
+  const p = {
+    perPage: REPOSITORIES_LIMIT_DEFAULT,
+    sort: SORT_DEFAULT,
+    order: ORDER_DEFAULT,
+    ...params
+  };
+
   return axios
     .get(`${REPOSITORIES_ENDPOINT}`, {
-      params: serializeParams({
-        perPage: REPOSITORIES_LIMIT_DEFAULT,
-        sort: SORT_DEFAULT,
-        order: ORDER_DEFAULT,
-        ...params
-      })
+      params: serializeParams(p)
     })
-    .then((response) => {
-      return parse(response);
+    .then(({ data }) => {
+      return parse(data, p);
     });
 };

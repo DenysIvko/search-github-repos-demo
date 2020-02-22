@@ -9,7 +9,7 @@ export const SET_QUERY = 'SET_QUERY';
 /* REDUCER */
 
 const initialState = {
-  last: '',
+  query: '',
   byQuery: {}
 };
 
@@ -18,7 +18,7 @@ export default (state = initialState, action) => {
     case SET_REPOS: {
       return {
         ...state,
-        last: action.payload.key,
+        query: action.payload.key,
         byQuery: {
           ...state.byQuery,
           [action.payload.key]: action.payload.data
@@ -35,7 +35,7 @@ export default (state = initialState, action) => {
     case SET_QUERY: {
       return {
         ...state,
-        last: action.payload
+        query: action.payload
       };
     }
     default: {
@@ -51,13 +51,13 @@ export const getCurrentState = (state) => {
 };
 
 export const getLastResults = (state) => {
-  const { last } = getCurrentState(state);
-  return getByQuery(state, last);
+  const { query } = getCurrentState(state);
+  return getByQuery(state, query);
 };
 
 export const getQuery = (state) => {
-  const { last } = getCurrentState(state);
-  return last;
+  const { query } = getCurrentState(state);
+  return query;
 };
 
 export const getCachedQueries = (state) => {

@@ -27,6 +27,13 @@ class Repos extends React.Component {
     });
   };
 
+  handlePageChange = (page) => {
+    this.props.onSubmit({
+      query: this.props.query,
+      page
+    });
+  };
+
   render() {
     return (
       <div className="App">

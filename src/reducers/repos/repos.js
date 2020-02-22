@@ -5,12 +5,15 @@ import { fetchRepos as fetchReposApi } from 'api/repos/repos';
 export const SET_REPOS = 'SET_REPOS';
 export const SET_REPOS_LOADING = 'SET_REPOS_LOADING';
 export const SET_QUERY = 'SET_QUERY';
+export const SET_PAGE = 'SET_PAGE';
 
 /* REDUCER */
 
 const initialState = {
   query: '',
-  byQuery: {}
+  page: 1,
+  byQuery: {},
+  byId: {}
 };
 
 export default (state = initialState, action) => {
@@ -19,9 +22,26 @@ export default (state = initialState, action) => {
       return {
         ...state,
         query: action.payload.key,
+        page: action.payload.data.params.page,
+        byId: {
+          ...state.byId,
+          ...action.payload.data.items.reduce((acc, item) => {
+            return {
+              ...acc,
+              [item.id]: item
+            };
+          }, {})
+        },
         byQuery: {
           ...state.byQuery,
-          [action.payload.key]: action.payload.data
+          [action.payload.data.params.query]: {
+            total: action.payload.data.total,
+            params: action.payload.data.params,
+            byPage: {
+              ...((state.byQuery[action.payload.data.params.query] || {}).byPage || {}),
+              [action.payload.data.params.page]: action.payload.data.items.map((item) => item.id)
+            }
+          }
         },
         loading: false
       };
@@ -38,6 +58,12 @@ export default (state = initialState, action) => {
         query: action.payload
       };
     }
+    case SET_PAGE: {
+      return {
+        ...state,
+        page: action.payload
+      };
+    }
     default: {
       return state;
     }
@@ -51,8 +77,8 @@ export const getCurrentState = (state) => {
 };
 
 export const getLastResults = (state) => {
-  const { query } = getCurrentState(state);
-  return getByQuery(state, query);
+  const { query, page } = getCurrentState(state);
+  return getByQuery(state, query, page);
 };
 
 export const getQuery = (state) => {
@@ -60,14 +86,27 @@ export const getQuery = (state) => {
   return query;
 };
 
+export const getPage = (state) => {
+  const { page } = getCurrentState(state);
+  return page;
+};
+
 export const getCachedQueries = (state) => {
   const { byQuery } = getCurrentState(state);
   return Object.keys(byQuery);
 };
 
-export const getByQuery = (state, query) => {
-  const { byQuery } = getCurrentState(state);
-  return byQuery[query];
+export const getByQuery = (state, query, page = 1) => {
+  const { byQuery, byId } = getCurrentState(state);
+  if (!byQuery[query]) {
+    return undefined;
+  }
+
+  return {
+    items: (byQuery[query].byPage[page] || []).map((id) => byId[id]),
+    params: byQuery[query].params,
+    total: byQuery[query].total
+  };
 };
 
 /* ACTION CREATORS */
@@ -96,16 +135,23 @@ export const setQuery = (query) => {
   };
 };
 
+export const setPage = (page) => {
+  return {
+    type: SET_PAGE,
+    payload: page
+  };
+};
+
 /* THUNKS */
 
 export const fetchRepos = (params) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const cachedResults = getByQuery(state, params.query);
+    const cachedResults = getByQuery(state, params.query, params.page);
 
     dispatch(setReposLoading(true));
 
-    if (cachedResults) {
+    if (cachedResults && cachedResults.items && cachedResults.items.length) {
       dispatch(setReposLoading(false));
       return Promise.resolve(cachedResults);
     }

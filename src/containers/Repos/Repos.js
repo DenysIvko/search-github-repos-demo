@@ -16,6 +16,10 @@ class Repos extends React.Component {
   };
 
   render() {
+    if (this.props.error) {
+      return <p>Error: {this.props.error}</p>;
+    }
+
     return (
       <div className="App">
         <form action="" onSubmit={this.handleSubmit}>
@@ -97,6 +101,7 @@ const mapStateToProps = (state) => {
     data: getLastResults(state),
     isLoading: state.repos.loading,
     query: getQuery(state),
+    error: state.repos.error,
     page: getPage(state),
     queryList: getCachedQueries(state)
   };

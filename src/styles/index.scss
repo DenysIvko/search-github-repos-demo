@@ -1,0 +1,28 @@
+@import 'fonts';
+@import 'reset';
+@import 'colors';
+@import 'variables';
+@import 'helpers';
+
+html,
+body {
+  font-family: $roboto;
+  font-size: $font-size-4;
+  font-weight: $font-weight-regular;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: $grey;
+  min-height: 100%;
+}
+
+a {
+  &,
+  &:link,
+  &:active {
+    color: $blue;
+  }
+
+  &:visited {
+    color: $purple;
+  }
+}

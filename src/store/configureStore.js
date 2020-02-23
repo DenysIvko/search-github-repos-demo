@@ -1,12 +1,16 @@
 import { applyMiddleware, compose, createStore } from 'redux';
-import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
+
 import rootReducer from 'reducers';
+import rootSaga from 'sagas';
 
 // Development Tooling
 import { composeWithDevTools } from 'redux-devtools-extension';
 import logger from 'utils/action-logger';
 
-const middlewares = [thunk];
+const sagaMiddleware = createSagaMiddleware();
+
+const middlewares = [sagaMiddleware];
 let composer = compose;
 
 if (process.env.NODE_ENV !== 'production') {
@@ -22,6 +26,7 @@ if (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) {
 const configureStore = (initialState) => {
   const composedCreateStore = composer(applyMiddleware(...middlewares))(createStore);
   const store = composedCreateStore(rootReducer, initialState);
+  sagaMiddleware.run(rootSaga);
 
   if (process.env.NODE_ENV !== 'production' && module.hot) {
     module.hot.accept('../reducers', () => {

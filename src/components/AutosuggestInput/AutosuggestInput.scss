@@ -1,0 +1,67 @@
+@import 'styles/colors';
+
+// colors
+$bg-color: $gray-100;
+$separator-color: $gray-400;
+$border-color: $gray-300;
+$shadow-color: $gray-400;
+$bg-focused-color: $gray-400;
+
+$border-radius: 20px;
+
+.AutosuggestInput__container {
+  position: relative;
+}
+
+.AutosuggestInput__input {
+  width: 100%;
+  padding: 10px 32px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  outline: none;
+  background-color: $bg-color;
+}
+
+.AutosuggestInput__input--focus {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  box-shadow: 0 1px 6px 0 $shadow-color;
+  border-color: transparent;
+}
+
+.AutosuggestInput__suggestions-list {
+  width: 100%;
+  position: absolute;
+  border: 0;
+  padding: 10px 0 16px 0;
+  background-color: $gray-100;
+  border-radius: 0 0 $border-radius $border-radius;
+  box-shadow: 0 4px 6px 0 $shadow-color;
+
+  &:before {
+    content: '';
+    display: block;
+    position: relative;
+    top: -10px;
+    width: 90%;
+    margin: 0 auto;
+    height: 1px;
+    background: $separator-color;
+  }
+}
+
+.AutosuggestInput__suggestion {
+  button {
+    width: 100%;
+    border: none;
+    padding: 5px 32px;
+    text-align: left;
+    background: $bg-color;
+    outline: none;
+
+    &:hover,
+    &:active {
+      background: $gray-300;
+    }
+  }
+}

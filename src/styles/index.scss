@@ -4,15 +4,17 @@
 @import 'variables';
 @import 'helpers';
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
-  font-family: $roboto;
-  font-size: $font-size-4;
-  font-weight: $font-weight-regular;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: $grey;
+  background: $gray-200;
   min-height: 100%;
+  color: $gray-700;
 }
 
 a {
@@ -25,4 +27,12 @@ a {
   &:visited {
     color: $purple;
   }
+}
+
+html,
+button,
+input {
+  font-family: $roboto;
+  font-size: $font-size-4;
+  font-weight: $font-weight-regular;
 }

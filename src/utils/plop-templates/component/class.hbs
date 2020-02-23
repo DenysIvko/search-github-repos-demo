@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import styles from './{{name}}.mscss';
+import './{{name}}.scss';
 
 class {{name}} extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+  state = {};
+
   render() {
     return (
-      <div className={styles.container}>
+      <div className="container">
         {this.props.componentName}
       </div>
     );

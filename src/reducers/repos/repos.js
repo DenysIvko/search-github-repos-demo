@@ -4,7 +4,9 @@ const getHashFor = (a, b) => a + '_' + b;
 
 /* ACTION CONSTANTS */
 
-export const SET_REPOS = 'SET_REPOS';
+export const REPOSITORIES_LOAD_REQUEST = 'REPOSITORIES_LOAD_REQUEST';
+export const REPOSITORIES_LOAD_SUCCESS = 'REPOSITORIES_LOAD_SUCCESS';
+export const REPOSITORIES_LOAD_ERROR = 'REPOSITORIES_LOAD_ERROR';
 export const SET_REPOS_LOADING = 'SET_REPOS_LOADING';
 export const SET_QUERY = 'SET_QUERY';
 export const SET_PAGE = 'SET_PAGE';
@@ -14,6 +16,7 @@ export const SET_PAGE = 'SET_PAGE';
 const initialState = {
   query: '',
   page: 1,
+  error: '',
   resultsByHash: {},
   byId: {},
   queries: {}
@@ -21,14 +24,21 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case SET_REPOS: {
+    case REPOSITORIES_LOAD_ERROR: {
       return {
         ...state,
-        query: action.payload.key,
-        page: action.payload.data.params.page,
+        error: action.payload
+      };
+    }
+    case REPOSITORIES_LOAD_SUCCESS: {
+      return {
+        ...state,
+        error: '',
+        query: action.payload.params.query,
+        page: action.payload.params.page,
         byId: {
           ...state.byId,
-          ...action.payload.data.items.reduce((acc, item) => {
+          ...action.payload.items.reduce((acc, item) => {
             return {
               ...acc,
               [item.id]: item
@@ -37,14 +47,14 @@ export default (state = initialState, action) => {
         },
         queries: {
           ...state.queries,
-          [action.payload.key]: ''
+          [action.payload.params.query]: ''
         },
         resultsByHash: {
           ...state.resultsByHash,
-          [getHashFor(action.payload.data.params.query, action.payload.data.params.page)]: {
-            total: action.payload.data.total,
-            params: action.payload.data.params,
-            items: action.payload.data.items.map((item) => item.id)
+          [getHashFor(action.payload.params.query, action.payload.params.page)]: {
+            total: action.payload.total,
+            params: action.payload.params,
+            items: action.payload.items.map((item) => item.id)
           }
         },
         loading: false
@@ -95,6 +105,14 @@ export const getPage = (state) => {
   return page;
 };
 
+export const getParams = (state) => {
+  const { page, query } = getCurrentState(state);
+  return {
+    page,
+    query
+  };
+};
+
 export const getCachedQueries = (state) => {
   const { queries } = getCurrentState(state);
   return Object.keys(queries);
@@ -119,13 +137,23 @@ export const filterRepos = (state, query, page = 1) => {
 
 /* ACTION CREATORS */
 
-export const setRepos = (key, data) => {
+export const repositoriesLoadRequest = () => {
   return {
-    type: SET_REPOS,
-    payload: {
-      key,
-      data
-    }
+    type: REPOSITORIES_LOAD_REQUEST
+  };
+};
+
+export const repositoriesLoadSuccess = (data) => {
+  return {
+    type: REPOSITORIES_LOAD_SUCCESS,
+    payload: data
+  };
+};
+
+export const repositoriesLoadError = (error) => {
+  return {
+    type: REPOSITORIES_LOAD_ERROR,
+    payload: error
   };
 };
 
@@ -147,28 +175,5 @@ export const setPage = (page) => {
   return {
     type: SET_PAGE,
     payload: page
-  };
-};
-
-/* THUNKS */
-
-export const fetchRepos = (params) => {
-  return async (dispatch, getState) => {
-    const state = getState();
-    dispatch(setQuery(params.query));
-    dispatch(setPage(params.page));
-    const cachedResults = filterRepos(state, params.query, params.page);
-
-    dispatch(setReposLoading(true));
-
-    if (cachedResults && cachedResults.items && cachedResults.items.length) {
-      dispatch(setReposLoading(false));
-      return null;
-    }
-
-    const reposData = await fetchReposApi(params);
-    dispatch(setRepos(params.query, reposData));
-    dispatch(setReposLoading(false));
-    return reposData;
   };
 };

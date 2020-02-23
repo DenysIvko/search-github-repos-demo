@@ -1,39 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ReactPaginate from 'react-paginate';
 import Pagination from 'react-js-pagination';
 
 import ListItem from 'components/ListItem';
-import { fetchRepos, getLastResults, getQuery, setQuery } from 'reducers/repos/repos';
+import { getLastResults, getQuery, setQuery, setPage, getCachedQueries, getPage } from 'reducers/repos/repos';
 import './Repos.scss';
-import { getCachedQueries, getPage } from 'reducers/repos/repos';
-import { setPage } from '../../reducers/repos/repos';
 
 class Repos extends React.Component {
-  componentDidMount() {
-    console.log('mounted');
-  }
-
-  componentWillUnmount() {
-    if (this.cancelPendingRequest) {
-    }
-  }
-
   handleSubmit = (event) => {
     event.preventDefault();
-
-    this.props.onSubmit({
-      query: this.props.query,
-      page: 1
-    });
   };
 
   handlePageChange = (page) => {
     this.props.setPage(page);
-    this.props.onSubmit({
-      query: this.props.query,
-      page
-    });
   };
 
   render() {
@@ -124,7 +103,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  onSubmit: fetchRepos,
   onQueryChange: setQuery,
   setPage: setPage
 };

@@ -32,7 +32,12 @@ const parse = (data, params) => {
   };
 };
 
-export const fetchRepos = (params) => {
+export const createReguestCancellation = () => {
+  const CancelToken = axios.CancelToken;
+  return CancelToken.source();
+};
+
+export const fetchRepos = (params, cancelToken) => {
   const p = {
     perPage: REPOSITORIES_LIMIT_DEFAULT,
     sort: SORT_DEFAULT,
@@ -42,7 +47,9 @@ export const fetchRepos = (params) => {
 
   return axios
     .get(`${REPOSITORIES_ENDPOINT}`, {
-      params: serializeParams(p)
+      params: serializeParams(p),
+      // make request cancellable
+      cancelToken
     })
     .then(({ data }) => {
       return parse(data, p);

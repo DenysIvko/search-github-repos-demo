@@ -1,3 +1,9 @@
+@import 'styles/index';
+
 .Repos__container {
+}
+
+.Repos__header {
   padding: 16px 0;
+  border-bottom: 1px solid $gray-500;
 }

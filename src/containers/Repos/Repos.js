@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
 
-import ListItem from 'components/ListItem';
+import RepoItem from 'components/RepoItem';
 import AutosuggestInput from 'components/AutosuggestInput';
 import ResultsCounter from 'components/ResultsCounter/ResultsCounter';
 import { getLastResults, getQuery, setQuery, setPage, getCachedQueries, getPage } from 'reducers/repos/repos';
@@ -36,16 +36,17 @@ class Repos extends React.Component {
               <ResultsCounter counter={this.props.data.total} />
             </div>
           )}
-
-          {this.props.isLoading ? (
-            <p>Loading...</p>
-          ) : this.props.data && this.props.data.items && this.props.data.items.length ? (
-            this.props.data.items.map((item) => (
-              <ListItem key={item.id} url={item.url} name={item.name} stargazers={item.stargazers} />
-            ))
-          ) : (
-            <p>No results</p>
-          )}
+          <div className="container-xs">
+            {this.props.isLoading ? (
+              <p>Loading...</p>
+            ) : this.props.data && this.props.data.items && this.props.data.items.length ? (
+              this.props.data.items.map((item) => (
+                <RepoItem key={item.id} url={item.url} name={item.name} starsCount={item.stargazers} />
+              ))
+            ) : (
+              <p>No results</p>
+            )}
+          </div>
 
           <div>Pagination here</div>
           {this.props.data && (

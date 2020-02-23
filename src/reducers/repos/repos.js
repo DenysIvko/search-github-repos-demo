@@ -5,6 +5,7 @@ const getHashFor = (a, b) => a + '_' + b;
 /* ACTION CONSTANTS */
 
 export const REPOSITORIES_LOAD_REQUEST = 'REPOSITORIES_LOAD_REQUEST';
+export const REPOSITORIES_LOAD_START = 'REPOSITORIES_LOAD_START';
 export const REPOSITORIES_LOAD_SUCCESS = 'REPOSITORIES_LOAD_SUCCESS';
 export const REPOSITORIES_LOAD_ERROR = 'REPOSITORIES_LOAD_ERROR';
 export const SET_REPOS_LOADING = 'SET_REPOS_LOADING';
@@ -24,10 +25,17 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case REPOSITORIES_LOAD_START: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
     case REPOSITORIES_LOAD_ERROR: {
       return {
         ...state,
-        error: action.payload
+        error: action.payload,
+        loading: false
       };
     }
     case REPOSITORIES_LOAD_SUCCESS: {
@@ -140,6 +148,13 @@ export const filterRepos = (state, query, page = 1) => {
 export const repositoriesLoadRequest = () => {
   return {
     type: REPOSITORIES_LOAD_REQUEST
+  };
+};
+
+export const repositoriesLoadStart = (data) => {
+  return {
+    type: REPOSITORIES_LOAD_START,
+    payload: data
   };
 };
 

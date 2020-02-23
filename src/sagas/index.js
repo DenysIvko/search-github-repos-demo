@@ -5,6 +5,8 @@ import {
   repositoriesLoadSuccess,
   repositoriesLoadError,
   repositoriesLoadRequest,
+  filterRepos,
+  repositoriesLoadStart,
   SET_QUERY,
   REPOSITORIES_LOAD_REQUEST,
   SET_PAGE
@@ -16,8 +18,14 @@ export function* fetchRepositories() {
   const { token, cancel } = yield call(createReguestCancellation);
   try {
     const params = yield select(getParams);
-    const data = yield call(fetchReposAPI, params, token);
-    yield put(repositoriesLoadSuccess(data));
+    const cachedResults = yield select(filterRepos, params.query, params.page);
+    const hasCachedResults = cachedResults && cachedResults.items && cachedResults.items.length;
+
+    if (!hasCachedResults) {
+      yield put(repositoriesLoadStart());
+      const data = yield call(fetchReposAPI, params, token);
+      yield put(repositoriesLoadSuccess(data));
+    }
   } catch (error) {
     yield put(repositoriesLoadError(error && error.message));
   } finally {
@@ -43,8 +51,6 @@ export function* watchPageChange() {
   yield takeEvery(SET_PAGE, requestRepositoriesLoad);
 }
 
-// notice how we now only export the rootSaga
-// single entry point to start all Sagas at once
 export default function* rootSaga() {
   yield all([watchQueryChange(), watchPageChange(), watchRepositoriesLoadRequest()]);
 }

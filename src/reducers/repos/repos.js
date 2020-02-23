@@ -1,5 +1,7 @@
 import { fetchRepos as fetchReposApi } from 'api/repos/repos';
 
+const getHashFor = (a, b) => a + '_' + b;
+
 /* ACTION CONSTANTS */
 
 export const SET_REPOS = 'SET_REPOS';
@@ -12,8 +14,9 @@ export const SET_PAGE = 'SET_PAGE';
 const initialState = {
   query: '',
   page: 1,
-  byQuery: {},
-  byId: {}
+  resultsByHash: {},
+  byId: {},
+  queries: {}
 };
 
 export default (state = initialState, action) => {
@@ -32,15 +35,16 @@ export default (state = initialState, action) => {
             };
           }, {})
         },
-        byQuery: {
-          ...state.byQuery,
-          [action.payload.data.params.query]: {
+        queries: {
+          ...state.queries,
+          [action.payload.key]: ''
+        },
+        resultsByHash: {
+          ...state.resultsByHash,
+          [getHashFor(action.payload.data.params.query, action.payload.data.params.page)]: {
             total: action.payload.data.total,
             params: action.payload.data.params,
-            byPage: {
-              ...((state.byQuery[action.payload.data.params.query] || {}).byPage || {}),
-              [action.payload.data.params.page]: action.payload.data.items.map((item) => item.id)
-            }
+            items: action.payload.data.items.map((item) => item.id)
           }
         },
         loading: false
@@ -78,7 +82,7 @@ export const getCurrentState = (state) => {
 
 export const getLastResults = (state) => {
   const { query, page } = getCurrentState(state);
-  return getByQuery(state, query, page);
+  return filterRepos(state, query, page);
 };
 
 export const getQuery = (state) => {
@@ -92,20 +96,24 @@ export const getPage = (state) => {
 };
 
 export const getCachedQueries = (state) => {
-  const { byQuery } = getCurrentState(state);
-  return Object.keys(byQuery);
+  const { queries } = getCurrentState(state);
+  return Object.keys(queries);
 };
 
-export const getByQuery = (state, query, page = 1) => {
-  const { byQuery, byId } = getCurrentState(state);
-  if (!byQuery[query]) {
+export const filterRepos = (state, query, page = 1) => {
+  const { resultsByHash, byId } = getCurrentState(state);
+  const hash = getHashFor(query, page);
+
+  if (!resultsByHash[hash]) {
     return undefined;
   }
 
+  const { items, params, total } = resultsByHash[hash];
+
   return {
-    items: (byQuery[query].byPage[page] || []).map((id) => byId[id]),
-    params: byQuery[query].params,
-    total: byQuery[query].total
+    items: items.map((id) => byId[id]),
+    params,
+    total
   };
 };
 
@@ -147,13 +155,15 @@ export const setPage = (page) => {
 export const fetchRepos = (params) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const cachedResults = getByQuery(state, params.query, params.page);
+    dispatch(setQuery(params.query));
+    dispatch(setPage(params.page));
+    const cachedResults = filterRepos(state, params.query, params.page);
 
     dispatch(setReposLoading(true));
 
     if (cachedResults && cachedResults.items && cachedResults.items.length) {
       dispatch(setReposLoading(false));
-      return Promise.resolve(cachedResults);
+      return null;
     }
 
     const reposData = await fetchReposApi(params);

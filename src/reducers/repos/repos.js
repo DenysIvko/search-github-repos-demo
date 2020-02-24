@@ -77,6 +77,7 @@ export default (state = initialState, action) => {
     case SET_QUERY: {
       return {
         ...state,
+        page: 1,
         query: action.payload
       };
     }

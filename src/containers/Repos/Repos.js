@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Pagination from 'react-js-pagination';
 
+import Pagination from 'components/Pagination';
 import RepoItem from 'components/RepoItem';
 import AutosuggestInput from 'components/AutosuggestInput';
 import ResultsCounter from 'components/ResultsCounter/ResultsCounter';
@@ -19,7 +19,7 @@ class Repos extends React.Component {
     }
 
     return (
-      <div className="Repos__container">
+      <div className="Repos__container mb-3">
         <div className="Repos__header">
           <div className="container">
             <AutosuggestInput
@@ -31,34 +31,34 @@ class Repos extends React.Component {
         </div>
 
         <div className="container">
-          {this.props.data && (
-            <div className="mb-2">
-              <ResultsCounter counter={this.props.data.total} />
-            </div>
-          )}
           <div className="container-xs">
-            {this.props.isLoading ? (
-              <p>Loading...</p>
-            ) : this.props.data && this.props.data.items && this.props.data.items.length ? (
-              this.props.data.items.map((item) => (
-                <RepoItem key={item.id} url={item.url} name={item.name} starsCount={item.stargazers} />
-              ))
-            ) : (
-              <p>No results</p>
+            {this.props.data && (
+              <div className="mb-2">
+                <ResultsCounter counter={this.props.data.total} />
+              </div>
+            )}
+            <div className="mb-3">
+              {this.props.isLoading ? (
+                <p>Loading...</p>
+              ) : this.props.data && this.props.data.items && this.props.data.items.length ? (
+                this.props.data.items.map((item) => (
+                  <RepoItem key={item.id} url={item.url} name={item.name} starsCount={item.stargazers} />
+                ))
+              ) : (
+                <p>No results</p>
+              )}
+            </div>
+
+            {this.props.data && (
+              <Pagination
+                activePage={this.props.page}
+                itemsCountPerPage={30}
+                totalItemsCount={this.props.data.total}
+                pageRangeDisplayed={5}
+                onChange={this.handlePageChange}
+              />
             )}
           </div>
-
-          <div>Pagination here</div>
-          {this.props.data && (
-            <Pagination
-              activePage={this.props.page}
-              itemsCountPerPage={30}
-              totalItemsCount={this.props.data.total}
-              pageRangeDisplayed={5}
-              onChange={this.handlePageChange}
-            />
-          )}
-          <hr />
         </div>
       </div>
     );

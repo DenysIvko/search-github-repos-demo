@@ -1,0 +1,71 @@
+@import 'styles/index';
+
+.Pagination__container {
+  display: flex;
+}
+
+.Pagination__box {
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  padding: 2px 0 0;
+  outline: none;
+  line-height: $font-size-4;
+  font-size: $font-size-3;
+}
+
+.Pagination__box--clickable {
+  position: relative;
+  cursor: pointer;
+  color: $blue;
+  &:focus,
+  &:hover {
+    padding-top: 0;
+    top: 2px;
+    border-bottom: 2px solid $gray-700;
+  }
+}
+
+.Pagination__box--active {
+  font-weight: $font-weight-bold;
+}
+
+.Pagination__icon {
+  display: block;
+  overflow: hidden;
+  margin: 0 1px 5px;
+  background-image: url('../../images/GitHub_Logo.png');
+  background-size: 244px 100px;
+  height: 57px;
+}
+
+.Pagination__icon--g {
+  background-position: -16px -21px;
+  width: 42px;
+}
+
+.Pagination__icon--i {
+  background-position: -63px -21px;
+  width: 13px;
+}
+
+.Pagination__icon--t {
+  background-position: -79px -21px;
+  width: 26px;
+}
+
+.Pagination__icon--h {
+  background-position: -109px -21px;
+  width: 40px;
+}
+
+.Pagination__icon--u {
+  background-position: -153px -21px;
+  width: 35px;
+}
+
+.Pagination__icon--b {
+  background-position: -192px -21px;
+  width: 36px;
+}

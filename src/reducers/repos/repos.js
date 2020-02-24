@@ -1,6 +1,9 @@
-import { fetchRepos as fetchReposApi } from 'api/repos/repos';
-
-const getHashFor = (a, b) => a + '_' + b;
+/*
+  `createHashForParams` is a method intended to create uniq hash based on `page` and `query` params.
+  With this approach there's no need to have deeply nested state shape, which is a good thing.
+  As long as one of params is a number (in our case it's `page`) collisions are impossible to happen.
+ */
+const createHashForParams = (a, b) => a + '_' + b;
 
 /* ACTION CONSTANTS */
 
@@ -20,7 +23,12 @@ const initialState = {
   error: '',
   resultsByHash: {},
   byId: {},
-  queries: {}
+  queries: {
+    // hardcoded suggestions
+    angular: '',
+    react: '',
+    vue: ''
+  }
 };
 
 export default (state = initialState, action) => {
@@ -59,7 +67,7 @@ export default (state = initialState, action) => {
         },
         resultsByHash: {
           ...state.resultsByHash,
-          [getHashFor(action.payload.params.query, action.payload.params.page)]: {
+          [createHashForParams(action.payload.params.query, action.payload.params.page)]: {
             total: action.payload.total,
             params: action.payload.params,
             items: action.payload.items.map((item) => item.id)
@@ -129,13 +137,9 @@ export const getCachedQueries = (state) => {
 
 export const filterRepos = (state, query, page = 1) => {
   const { resultsByHash, byId } = getCurrentState(state);
-  const hash = getHashFor(query, page);
+  const hash = createHashForParams(query, page);
 
-  if (!resultsByHash[hash]) {
-    return undefined;
-  }
-
-  const { items, params, total } = resultsByHash[hash];
+  const { items = [], params = {}, total } = resultsByHash[hash] || {};
 
   return {
     items: items.map((id) => byId[id]),

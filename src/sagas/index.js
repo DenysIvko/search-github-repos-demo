@@ -1,4 +1,4 @@
-import { put, takeLatest, call, all, throttle, cancelled, select, takeEvery } from 'redux-saga/effects';
+import { put, takeLatest, call, all, debounce, cancelled, select } from 'redux-saga/effects';
 import { fetchRepos as fetchReposAPI, createReguestCancellation } from 'api/repos/repos';
 import {
   getParams,
@@ -12,16 +12,16 @@ import {
   SET_PAGE
 } from 'reducers/repos/repos';
 
-const QUERY_CHANGE_THROTTLE_DELAY = 500;
+const QUERY_CHANGE_DEBOUNCE_DELAY = 300;
 
 export function* fetchRepositories() {
   const { token, cancel } = yield call(createReguestCancellation);
   try {
     const params = yield select(getParams);
     const cachedResults = yield select(filterRepos, params.query, params.page);
-    const hasCachedResults = cachedResults && cachedResults.items && cachedResults.items.length;
+    const hasCachedResults = cachedResults && cachedResults.items.length;
 
-    if (!hasCachedResults) {
+    if (!hasCachedResults && params.query) {
       yield put(repositoriesLoadStart());
       const data = yield call(fetchReposAPI, params, token);
       yield put(repositoriesLoadSuccess(data));
@@ -43,14 +43,10 @@ export function* watchRepositoriesLoadRequest() {
   yield takeLatest(REPOSITORIES_LOAD_REQUEST, fetchRepositories);
 }
 
-export function* watchQueryChange() {
-  yield throttle(QUERY_CHANGE_THROTTLE_DELAY, SET_QUERY, requestRepositoriesLoad);
-}
-
-export function* watchPageChange() {
-  yield takeEvery(SET_PAGE, requestRepositoriesLoad);
+export function* watchParamsChange() {
+  yield debounce(QUERY_CHANGE_DEBOUNCE_DELAY, [SET_QUERY, SET_PAGE], requestRepositoriesLoad);
 }
 
 export default function* rootSaga() {
-  yield all([watchQueryChange(), watchPageChange(), watchRepositoriesLoadRequest()]);
+  yield all([watchParamsChange(), watchRepositoriesLoadRequest()]);
 }

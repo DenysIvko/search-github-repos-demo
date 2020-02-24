@@ -11,7 +11,6 @@ export const REPOSITORIES_LOAD_REQUEST = 'REPOSITORIES_LOAD_REQUEST';
 export const REPOSITORIES_LOAD_START = 'REPOSITORIES_LOAD_START';
 export const REPOSITORIES_LOAD_SUCCESS = 'REPOSITORIES_LOAD_SUCCESS';
 export const REPOSITORIES_LOAD_ERROR = 'REPOSITORIES_LOAD_ERROR';
-export const SET_REPOS_LOADING = 'SET_REPOS_LOADING';
 export const SET_QUERY = 'SET_QUERY';
 export const SET_PAGE = 'SET_PAGE';
 
@@ -28,7 +27,8 @@ const initialState = {
     angular: '',
     react: '',
     vue: ''
-  }
+  },
+  loading: false
 };
 
 export default (state = initialState, action) => {
@@ -36,7 +36,8 @@ export default (state = initialState, action) => {
     case REPOSITORIES_LOAD_START: {
       return {
         ...state,
-        loading: true
+        loading: true,
+        error: ''
       };
     }
     case REPOSITORIES_LOAD_ERROR: {
@@ -50,8 +51,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         error: '',
-        query: action.payload.params.query,
-        page: action.payload.params.page,
         byId: {
           ...state.byId,
           ...action.payload.items.reduce((acc, item) => {
@@ -76,16 +75,9 @@ export default (state = initialState, action) => {
         loading: false
       };
     }
-    case SET_REPOS_LOADING: {
-      return {
-        ...state,
-        loading: action.payload
-      };
-    }
     case SET_QUERY: {
       return {
         ...state,
-        page: 1,
         query: action.payload
       };
     }
@@ -139,7 +131,7 @@ export const filterRepos = (state, query, page = 1) => {
   const { resultsByHash, byId } = getCurrentState(state);
   const hash = createHashForParams(query, page);
 
-  const { items = [], params = {}, total } = resultsByHash[hash] || {};
+  const { items = [], params = { perPage: 0 }, total = 0 } = resultsByHash[hash] || {};
 
   return {
     items: items.map((id) => byId[id]),
@@ -174,13 +166,6 @@ export const repositoriesLoadError = (error) => {
   return {
     type: REPOSITORIES_LOAD_ERROR,
     payload: error
-  };
-};
-
-export const setReposLoading = (loading) => {
-  return {
-    type: SET_REPOS_LOADING,
-    payload: loading
   };
 };
 

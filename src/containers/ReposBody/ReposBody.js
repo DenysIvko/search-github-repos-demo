@@ -7,7 +7,7 @@ import RepoItem from 'components/RepoItem';
 import ResultsCounter from 'components/ResultsCounter/ResultsCounter';
 import { getLastResults, getPage, getQuery, setPage } from 'reducers/repos/repos';
 
-const ReposBody = ({ error, isLoading, repos, total, page, onPageChange, query, limit }) => {
+const ReposBody = ({ error, isLoading, repos, total, page, onPageChange, query, reposPerPage }) => {
   if (!query) {
     return null;
   }
@@ -38,7 +38,7 @@ const ReposBody = ({ error, isLoading, repos, total, page, onPageChange, query, 
 
       <Pagination
         activePage={page}
-        itemsCountPerPage={limit}
+        itemsCountPerPage={reposPerPage}
         totalItemsCount={total}
         pageRangeDisplayed={5}
         onChange={onPageChange}
@@ -62,7 +62,7 @@ ReposBody.propTypes = {
   page: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
-  limit: PropTypes.number.isRequired
+  reposPerPage: PropTypes.number.isRequired
 };
 
 ReposBody.defaultProps = {
@@ -73,7 +73,7 @@ const mapStateToProps = (state) => {
   const { items, total, params } = getLastResults(state);
   return {
     repos: items,
-    limit: params.limit,
+    reposPerPage: params.perPage,
     total,
     isLoading: state.repos.loading,
     query: getQuery(state),

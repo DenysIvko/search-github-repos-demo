@@ -1,4 +1,4 @@
-import { put, takeLatest, call, all, debounce, cancelled, select } from 'redux-saga/effects';
+import { put, takeLatest, call, all, debounce, cancelled, select, takeEvery } from 'redux-saga/effects';
 import { fetchRepos as fetchReposAPI, createReguestCancellation } from 'api/repos/repos';
 import {
   getParams,
@@ -7,6 +7,7 @@ import {
   repositoriesLoadRequest,
   filterRepos,
   repositoriesLoadStart,
+  setPage,
   SET_QUERY,
   REPOSITORIES_LOAD_REQUEST,
   SET_PAGE
@@ -39,6 +40,10 @@ export function* requestRepositoriesLoad() {
   yield put(repositoriesLoadRequest());
 }
 
+export function* resetPage() {
+  yield put(setPage(1));
+}
+
 export function* watchRepositoriesLoadRequest() {
   yield takeLatest(REPOSITORIES_LOAD_REQUEST, fetchRepositories);
 }
@@ -47,6 +52,10 @@ export function* watchParamsChange() {
   yield debounce(QUERY_CHANGE_DEBOUNCE_DELAY, [SET_QUERY, SET_PAGE], requestRepositoriesLoad);
 }
 
+export function* watchPageChange() {
+  yield takeEvery(SET_QUERY, resetPage);
+}
+
 export default function* rootSaga() {
-  yield all([watchParamsChange(), watchRepositoriesLoadRequest()]);
+  yield all([watchParamsChange(), watchRepositoriesLoadRequest(), watchPageChange()]);
 }

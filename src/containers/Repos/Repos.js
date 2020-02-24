@@ -37,6 +37,8 @@ const mapStateToProps = (state) => {
   };
 };
 
+export { Repos as Component };
+
 const mapDispatchToProps = {
   onQueryChange: setQuery
 };

@@ -69,6 +69,8 @@ ReposBody.defaultProps = {
   error: ''
 };
 
+export { ReposBody as Component };
+
 const mapStateToProps = (state) => {
   const { items, total, params } = getLastResults(state);
   return {

@@ -2,6 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import Pagination from '../Pagination';
+import PaginateLetter from '../PaginateLetter';
 
 const factory = () => {
   return shallow(
@@ -18,6 +19,6 @@ const factory = () => {
 describe('<Pagination />', () => {
   test('renders', () => {
     const tree = factory();
-    expect(tree.find('PaginateLetter').exists()).toBe(true);
+    expect(tree.find(PaginateLetter).exists()).toBe(true);
   });
 });

@@ -2,6 +2,20 @@
 
 #### ⚠️ Pushed to `master`
 
+- random change (denys.ivko@sigma.software)
+- change private to false ([@DenysIvko](https://github.com/DenysIvko))
+
+#### Authors: 2
+
+- [@DenysIvko](https://github.com/DenysIvko)
+- denysivko (denys.ivko@sigma.software)
+
+---
+
+# v1.0.1 (Mon Jan 08 2024)
+
+#### ⚠️ Pushed to `master`
+
 - change private to false ([@DenysIvko](https://github.com/DenysIvko))
 
 #### Authors: 1

@@ -1,6 +1,6 @@
 {
   "name": "@DenysIvko/search-github-repos-demo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "dependencies": {
     "auto": "^11.0.4",

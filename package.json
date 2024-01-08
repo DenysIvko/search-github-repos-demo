@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "auto": "^11.0.4",
     "axios": "^0.19.2",
     "classnames": "^2.2.6",
     "node-sass": "^4.13.1",
@@ -37,7 +38,8 @@
     "test": "react-scripts test",
     "coverage": "npm test -- --coverage",
     "eject": "react-scripts eject",
-    "plop": "plop"
+    "plop": "plop",
+    "release": "auto shipit"
   },
   "husky": {
     "hooks": {

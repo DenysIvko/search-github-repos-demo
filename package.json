@@ -65,5 +65,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "repository": "git+ssh://git@github.com/DenysIvko/search-github-repos-demo.git",
+  "author": "automation <automation@automation.com>",
+  "publishConfig": {
+    "@DenysIvko:registry": "https://npm.pkg.github.com"
   }
 }

@@ -1,3 +1,15 @@
+# v1.0.1 (Mon Jan 08 2024)
+
+#### ⚠️ Pushed to `master`
+
+- change private to false ([@DenysIvko](https://github.com/DenysIvko))
+
+#### Authors: 1
+
+- [@DenysIvko](https://github.com/DenysIvko)
+
+---
+
 # v1.0.0 (Mon Jan 08 2024)
 
 #### 💥 Breaking Change

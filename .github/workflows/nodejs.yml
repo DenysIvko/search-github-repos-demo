@@ -13,3 +13,4 @@ jobs:
         with:
           release-type: node
           default-branch: master
+          token: ${{ secrets.GITHUB_TOKEN }}

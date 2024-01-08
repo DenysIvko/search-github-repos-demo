@@ -39,7 +39,7 @@
     "coverage": "npm test -- --coverage",
     "eject": "react-scripts eject",
     "plop": "plop",
-    "release": "auto shipit --from master --base-branch test --dry-run"
+    "release-old": "auto shipit --from master --base-branch test --dry-run"
   },
   "husky": {
     "hooks": {

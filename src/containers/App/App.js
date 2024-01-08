@@ -6,6 +6,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 function App() {
   return (
     <ErrorBoundary>
+      123456
       <Repos />
     </ErrorBoundary>
   );

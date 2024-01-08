@@ -4,7 +4,7 @@
   "private": false,
   "dependencies": {
     "auto": "^11.0.4",
-    "axios": "^0.19.2",
+    "axios": "^1.6.0",
     "classnames": "^2.2.6",
     "node-sass": "^4.13.1",
     "numeral": "^2.0.6",
